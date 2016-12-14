@@ -9,6 +9,9 @@ var bodyParser = require('body-parser');
 var mongo = require('mongodb').MongoClient;
 
 
+
+require('dotenv').load()
+
 var index = require('./routes/index');
 var users = require('./routes/users');
 
@@ -26,10 +29,10 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/', index);
-app.use('/users', users);
+//app.use('/', index);
+//app.use('/users', users);
 
-require('dotenv').load()
+
 
 // Setup mongo database
 
@@ -50,9 +53,8 @@ mongo.connect(mongodbURL, function (err, db) {
 
 app.get('/new/:url', function (req, res, next) {
 
-    //var url = decodeURIComponent(req.params.new)
-
     var url = decodeURIComponent(req.originalUrl.substring(5))
+    console.log('New: ' + url)
 
     //console.log("req.originalUrl: " + req.originalUrl);
     //console.log("req.path: " + req.path)
@@ -134,9 +136,15 @@ app.get('/:random', function (req, res, next) {
 
 })
 
+app.get('/', function (req, res, next) {
+    console.log('Home page')
+    res.render('index', { title: 'Express' });
+})
+
 // app.get('/favicon.ico', function(req, res) {
 //     res.send(200);
 // });
+
 
 function  createNewShortLink(req) {
 
@@ -204,7 +212,6 @@ function saveURL(document, db) {
 }
 
 
-
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
   var err = new Error('Not Found');
@@ -227,4 +234,10 @@ app.use(function(err, req, res, next) {
     });
 });
 
-module.exports = app;
+var port = process.env.PORT || 8080
+
+app.listen(port, function () {
+    console.log('Node.js listening on port ' + port);
+})
+
+//module.exports = app;
