@@ -29,7 +29,7 @@ app.use('/users', users);
 
 // Setup mongo database
 
-var mongodbURL = 'mongodb://localhost:27017/URLShortberMicroserviceDB'
+var mongodbURL = process.env.MONGODB_URI
 
 var database;
 
